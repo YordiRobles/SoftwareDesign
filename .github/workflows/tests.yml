@@ -2,27 +2,35 @@ name: CI - Python Unit Tests
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [ main]
   pull_request:
-    branches: [ main, master, develop ]
+    branches: [ main]
 
 jobs:
   tests:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.12.6"]
+    env:
+      PROJECT_DIR: Lab4/lab4_tests_example 
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
-          cache: "pip"
+          python-version: "3.12.6"
 
-      - name: Run unit tests (unittest discover)
+      - name: Configure PYTHONPATH to project dir
+        run: echo "PYTHONPATH=$GITHUB_WORKSPACE/${PROJECT_DIR}" >> $GITHUB_ENV
+
+      # (Opcional) listar contenido para verificar rutas
+      - name: Show project tree (debug)
         run: |
-          python -m unittest discover -v
+          ls -la
+          echo "----"
+          ls -la "${PROJECT_DIR}"
+
+      - name: Run unit tests
+        run: |
+          python -m unittest discover -v -s "${PROJECT_DIR}/tests" -p "test_*.py"
