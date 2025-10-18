@@ -3,7 +3,6 @@ from src.models.character import Character
 from src.models.character import Character
 
 class TankCharacter(Character):
-    """Tanque simple: reduce el daño en dos pasos (porcentaje y luego flat)."""
     def __init__(
         self,
         name: str,
